@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
 import { useClass } from '@/contexts/ClassContext';
 import CreateClassModal from '@/components/CreateClassModal';
+import { AnimatedLogo } from '@/components/AnimatedLogo';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -43,7 +44,9 @@ const Index = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div className="flex items-center">
-            <img src="/mentorai-logo.png" alt="MentorAI Logo" style={{ height: 110, marginRight: 32 }} />
+            <div style={{ height: 110, marginRight: 32, display: 'flex', alignItems: 'center' }}>
+              <AnimatedLogo />
+            </div>
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">
                 Gestión de Clases

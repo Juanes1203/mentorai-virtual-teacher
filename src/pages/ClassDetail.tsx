@@ -189,6 +189,7 @@ const ClassDetail = () => {
               isAnalyzing={isAnalyzing}
               generateAnalysis={handleGenerateAnalysis}
               saveChanges={saveChanges}
+              className={classData.name}
             />
           </TabsContent>
 

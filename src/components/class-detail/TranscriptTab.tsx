@@ -7,8 +7,11 @@ import {
   Brain, 
   Download,
   Save,
-  Mic
+  Mic,
+  Upload
 } from 'lucide-react';
+import { updateAgentKnowledge } from '@/services/elevenlabs';
+import { useToast } from '@/hooks/use-toast';
 
 interface TranscriptTabProps {
   transcript: string;
@@ -17,6 +20,7 @@ interface TranscriptTabProps {
   isAnalyzing: boolean;
   generateAnalysis: () => void;
   saveChanges: () => void;
+  className?: string;
 }
 
 // Add custom element type for TypeScript
@@ -35,8 +39,11 @@ export const TranscriptTab: React.FC<TranscriptTabProps> = ({
   isRecording,
   isAnalyzing,
   generateAnalysis,
-  saveChanges
+  saveChanges,
+  className = "Clase"
 }) => {
+  const { toast } = useToast();
+
   useEffect(() => {
     // Dynamically add the ElevenLabs script if it hasn't been added yet
     if (!document.getElementById("elevenlabs-convai-script")) {
@@ -48,6 +55,23 @@ export const TranscriptTab: React.FC<TranscriptTabProps> = ({
       document.body.appendChild(script);
     }
   }, []);
+
+  const handleUpdateAgentKnowledge = async () => {
+    if (!transcript.trim()) {
+      toast({
+        title: "Error",
+        description: "Necesitas tener una transcripción para actualizar el conocimiento del agente",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await updateAgentKnowledge(transcript, className);
+    } catch (error) {
+      console.error('Error al actualizar el conocimiento del agente:', error);
+    }
+  };
 
   return (
     <Card className="border-2 shadow-lg">
@@ -74,6 +98,14 @@ export const TranscriptTab: React.FC<TranscriptTabProps> = ({
                   Generar Análisis
                 </>
               )}
+            </Button>
+            <Button 
+              onClick={handleUpdateAgentKnowledge}
+              disabled={!transcript}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              Actualizar Agente
             </Button>
             <Button variant="outline" size="sm">
               <Download className="w-4 h-4 mr-2" />
@@ -111,7 +143,7 @@ export const TranscriptTab: React.FC<TranscriptTabProps> = ({
             </div>
           )}
         </div>
-        <elevenlabs-convai agent-id="agent_01jwsqvdyeeqkv6jvmrwnw7z2g"></elevenlabs-convai>
+        <elevenlabs-convai agent-id={import.meta.env.VITE_ELEVENLABS_AGENT_ID}></elevenlabs-convai>
       </CardContent>
     </Card>
   );
